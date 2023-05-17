@@ -20,16 +20,20 @@ int main(int ac, char **args, char **env)
 		{
 			exit(EXIT_FAILURE);
 		}
+        if(!_isspace(*input))
+        {
 		input[_strcspn(input, "\n")] = '\0';
 		args = parse_input(input);
 		run_command(args, env);
 		if (args[0] != NULL && args[0] != input)
 		free(args[0]);
-		free(args);
+		free(args);   
+        }
 	}
 
 	return (0);
 }
+
 
 
 
