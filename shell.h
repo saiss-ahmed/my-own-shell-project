@@ -13,10 +13,12 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include <dirent.h>
+#include <limits.h>
 
 #define MAX_ENV_SIZE 4096
 #define MAX_WORDS 1024
 #define BUFFER_SIZE 1024
+#define MAX_PATH_LENGTH 1024
 /*the main functions*/
 int run_command(char **ls, char **env);
 char **parse_input(char *input);
@@ -29,7 +31,6 @@ void execute_external_command(char **ls, char **env);
 /*the main fucnions*/
 
 extern char **environ;
-
 
 int put_char(char c);
 void print_string(char *str);
@@ -44,5 +45,6 @@ char* _getenv(char *name);
 int _strcmp(char* str1, char* str2);
 void cut_string(char *str, char ch, char *result);
 void cut_string_two(char *str, char ch, char *result);
+int _setenv(const char *name, const char *value);
 
 #endif

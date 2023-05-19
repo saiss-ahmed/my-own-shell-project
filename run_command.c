@@ -39,7 +39,14 @@ void execute_echo_command(char **ls)
 	{
 		char *arg = ls[i];
 
-		if (arg[0] == '$')
+		if (arg[0] == '$' && strcmp(arg, "$PWD") == 0)
+		{
+			char cwd[PATH_MAX];
+
+			if (getcwd(cwd, sizeof(cwd)) != NULL)
+				print_string(cwd);
+		}
+		else if (arg[0] == '$')
 		{
 			env_var_name = arg + 1;
 			env_var_value = _getenv(env_var_name);
@@ -69,43 +76,54 @@ void execute_echo_command(char **ls)
  */
 void execute_cd_command(char **ls)
 {
-	char *arg = ls[1];
-	char *env_var_name;
-	char *env_var_value;
+	static char previous_directory[PATH_MAX];
+    char *arg = ls[1];
+    char *env_var_name;
+    char *env_var_value;
 
-	if (arg == NULL)
-	{
-		chdir(_getenv("HOME"));
-	}
-	else
-	{
-		if (chdir(arg) != 0)
-		{
-			if (arg[0] == '$')
-			{
-				env_var_name = arg + 1;
-				env_var_value = _getenv(env_var_name);
+    if (arg == NULL)
+    {
+        chdir(getenv("HOME"));
+    }
+    else if (strcmp(arg, "-") == 0)
+    {
+          if (previous_directory[0] != '\0')
+        {
+            chdir(previous_directory);
+            printf("%s\n", previous_directory);
+        }
+    }
+    else
+    {
+        if (getcwd(previous_directory, sizeof(previous_directory)) == NULL)
+        {
+            perror("getcwd");
+            return;
+        }
 
-				if (env_var_value != NULL)
-					chdir(env_var_value);
-			}
-			else if (arg[0] == '~')
-			{
-				env_var_name = arg;
-				env_var_value = _getenv("HOME");
-				chdir(env_var_value);
-			}
-			if (access(arg, F_OK) != -1)
-			{
-				if (chdir(arg) == -1)
-				{
-					print_string("bash: cd: ");
-					perror(arg);
-				}
-			}
-		}
-	}
+        if (chdir(arg) != 0)
+        {
+            if (arg[0] == '$')
+            {
+                env_var_name = arg + 1;
+                env_var_value = getenv(env_var_name);
+
+                if (env_var_value != NULL)
+                    chdir(env_var_value);
+            }
+            else if (arg[0] == '~')
+            {
+                env_var_value = getenv("HOME");
+                chdir(env_var_value);
+            }
+            if (access(arg, F_OK) != -1)
+            {
+                perror(arg);
+            }
+        }
+    }
 }
+
 
 /**
  * execute_external_command - executes a command using fork and execve
