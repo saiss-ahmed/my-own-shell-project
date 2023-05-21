@@ -31,23 +31,14 @@ size_t _strcspn(const char *s1, const char *s2)
  *Return: always a string of chars
  */
 
-char *_strcat(char *dest, char *src)
+char *_strcat(char *dest, const char *src)
 {
-	int i, j;
-
-	i = j = 0;
-	while (dest[i] != '\0')
-	{
-		i++;
-	}
-	while (src[j] != '\0')
-	{
-		dest[i] = src[j];
-		i++;
-		j++;
-	}
-	dest[i] = '\0';
-	return (dest);
+    char *temp = dest;
+    while (*temp)
+        temp++;
+    while ((*temp++ = *src++))
+        ;
+    return dest;
 }
 /**
  *_strcpy - a function that copy a string to an array
@@ -56,30 +47,25 @@ char *_strcat(char *dest, char *src)
  *Return: the array you are copying to
  */
 
-char *_strcpy(char *dest, char *src)
+char *_strcpy(char *dest, const char *src)
 {
-	int len = _strlen(src);
-	int i;
-
-	for (i = 0; i <= len; i++)
-	{
-		dest[i] = src[i];
-	}
-	return (dest);
-
+    char *temp = dest;
+    while ((*temp++ = *src++))
+        ;
+    return dest;
 }
 /**
-  *_strtok - a fucntion that cut the part in it second argument
-  *@str: the string
-  *@delim:  the string we wanna remove
-  *Return: a string
-  */
+	*_strtok - a fucntion that cut the part in it second argument
+	*@str: the string
+	*@delim:  the string we wanna remove
+	*Return: a string
+	*/
 char *_strtok(char *str, const char *delim)
 {
 	static char *p;
 	char *start, *end;
 
-	if (str != NULL )
+	if (str != NULL)
 	{
 		p = str;
 	}

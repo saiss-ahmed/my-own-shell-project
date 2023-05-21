@@ -7,14 +7,44 @@
 char **parse_input(char *input)
 {
 	char **ls;
+	int status;
 	int word_count = 0;
 
 	cut_string(input, ' ', input);
 	ls = malloc(sizeof(char *) * (MAX_WORDS + 1));
 	ls = process_input_words(input, ls, word_count);
-	check_and_execute_exit(ls);
+
+	if (_strcmp(ls[0], "/bin/exit") == 0)
+	{
+		if (ls[1] == NULL)
+		{
+			free(ls[0]);
+			free(ls);
+			exit(EXIT_SUCCESS);
+		}
+		else
+		{
+			status = _atoi(ls[1]);
+			free(ls[0]);
+			free(ls);
+			exit(status);
+		}
+		free(ls);
+	}
+	else if (_strcmp(ls[0], "/bin/setenv") == 0)
+	{
+		if (ls[1] != NULL && ls[2] != NULL)
+		{
+
+			_setenv(ls[1], ls[2], 1);
+			free(ls[0]);
+			free(ls);
+		}
+		return (0);
+	}
 	return (ls);
 }
+
 /**
  * process_input_words - a function that turn turn input into a double pointer
  * @input: the string
@@ -59,25 +89,4 @@ char **process_input_words(char *input, char **ls, int word_count)
 	ls[word_count] = NULL;
 	return (ls);
 }
-/**
- * check_and_execute_exit - a fucntion checks if the first argument is exit
- * @ls: the list argument
- */
-void check_and_execute_exit(char **ls)
-{
-	int status;
 
-	if (_strcmp(ls[0], "/bin/exit") == 0)
-	{
-		if (ls[1] == NULL)
-		{
-			exit(EXIT_SUCCESS);
-		}
-		else
-		{
-			status = _atoi(ls[1]);
-			exit(status);
-		}
-		free(ls);
-	}
-}

@@ -1,41 +1,50 @@
 #include "shell.h"
-int _strncmp(char *s1, char *s2, size_t n)
+/**
+ *_strncmp - a funciton that compares two str
+ *@s1: string 1
+ *@s2: string 2
+ *@n: buffer size
+ *Return: 0 (success)
+ */
+int _strncmp(const char *str1, const char *str2, size_t n)
 {
-	size_t i = 0;
-
-    for (; i < n; i++) {
-        if (s1[i] != s2[i])
-            return (unsigned char)s1[i] - (unsigned char)s2[i];
-        if (s1[i] == '\0')
-            return 0;
+    while (*str1 && *str2 && n)
+	{
+        if (*str1 != *str2)
+            return (*str1 - *str2);
+        str1++;
+        str2++;
+        n--;
     }
-    return 0;
+    if (n == 0)
+        return 0;
+    return (*str1 - *str2);
 }
 /**
  *_getenv - a funciton that gives the name of teh env
  *@name: the name of the env
  *Return: a string
  */
- char *_getenv(char *name) 
- { 
-         extern char **environ; 
-         int i = 0, len = 0; 
-         char *variable = NULL; 
-  
-         if (name == NULL || _strlen(name) == 0) 
-                 return (NULL); 
-  
-         for (; environ[i] != NULL; ++i) 
-         { 
-                 variable = environ[i]; 
-                 len = _strlen(name); 
-                 if (_strncmp(name, variable, len) == 0 && variable[len] == '=') 
-                 { 
-                         return (variable + len + 1); 
-                 } 
-         } 
-         return (NULL); 
- }
+char *_getenv(const char *name)
+{
+    size_t name_length = strlen(name);
+	int i = 0;
+
+    if (name == NULL || strlen(name) == 0)
+        return NULL;
+    for (; environ[i] != NULL; i++)
+    {
+        const char *variable = environ[i];
+        size_t variable_length = strcspn(variable, "=");
+
+        if (name_length == variable_length && strncmp(name, variable, variable_length) == 0)
+        {
+            return strdup(variable + variable_length + 1);
+        }
+    }
+
+    return NULL;
+}
 
 /**
  *_strcmp - a function that copare two strings
