@@ -33,12 +33,13 @@ size_t _strcspn(const char *s1, const char *s2)
 
 char *_strcat(char *dest, const char *src)
 {
-    char *temp = dest;
-    while (*temp)
-        temp++;
-    while ((*temp++ = *src++))
-        ;
-    return dest;
+	char *temp = dest;
+
+	while (*temp)
+		temp++;
+	while ((*temp++ = *src++))
+		;
+	return (dest);
 }
 /**
  *_strcpy - a function that copy a string to an array
@@ -49,10 +50,11 @@ char *_strcat(char *dest, const char *src)
 
 char *_strcpy(char *dest, const char *src)
 {
-    char *temp = dest;
-    while ((*temp++ = *src++))
-        ;
-    return dest;
+	char *temp = dest;
+
+	while ((*temp++ = *src++))
+		;
+	return (dest);
 }
 /**
 	*_strtok - a fucntion that cut the part in it second argument
@@ -90,4 +92,40 @@ char *_strtok(char *str, const char *delim)
 		p++;
 	}
 	return (start);
+}
+
+/**
+ *_strspn - a function that gets the length of a prefix substring.
+ *@str: string
+ *@charset: another string
+ *Return: returns counter
+ */
+size_t _strspn(const char *str, const char *charset)
+{
+	const char *s = str;
+	size_t count = 0;
+	int found = 0;
+
+	while (*s != '\0')
+	{
+		const char *c = charset;
+
+		found = 0;
+		while (*c != '\0')
+		{
+			if (*s == *c)
+			{
+				found = 1;
+				break;
+			}
+			c++;
+		}
+
+		if (found == 0)
+			break;
+
+		count++;
+		s++;
+	}
+	return (count);
 }

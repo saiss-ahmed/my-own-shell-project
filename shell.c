@@ -1,62 +1,49 @@
 #include "shell.h"
 
-#define MAX_WORDS 1024
-#define BUFFER_SIZE 1024
-
 /**
 * main - entry point
 * @ac: args count
 * @args: args vector
-* @env: environment
 * Return: 0 on success
 */
 
-int main(int ac, char **args, char **env)
+int main(int ac, char **args)
 {
-	char input[BUFFER_SIZE];
-	int i = 0;
+	char *first = args[0];
+	char *big_env[MAX_WORDS], *input = NULL;
+	size_t n = 0;
+	ssize_t chars_read;
+	int i = 0, j = 0;
 
+	while (environ[i] != NULL)
+		i++;
+	while (j < i)
+	{
+		big_env[j] = environ[j];
+		j++;
+	}
+	big_env[j] = NULL;
+	(void)ac;
+	signal(SIGINT, ctrlc_avoid);
 	while (true)
 	{
-		print_string("$ ");
-		if ((read(STDIN_FILENO, &input, BUFFER_SIZE)) == '\0')
+		if ((isatty(STDIN_FILENO)))
+			print_string("($) ");
+		chars_read = _getline(&input, &n, stdin);
+		if (chars_read == -1)
 		{
-				if (env != environ)
-				{
-				for (ac = 0; env[ac] != NULL; ac++)
-				{
-					environ[ac] = env[ac];
-					if (env[ac + 1] == NULL)
-					{
-						for (i = ac + 1; environ[i] != NULL; i++)
-						{
-							free(environ[i]);
-						}
-					}
-				}
-				free(environ);
-			
-            }
+			free_all(input, args);
+			if (!(isatty(STDIN_FILENO)))
+				exit(EXIT_SUCCESS);
 			exit(EXIT_FAILURE);
 		}
-		if (!_isspace(*input))
-		{
-		input[_strcspn(input, "\n")] = '\0';
-		args = parse_input(input);
-		}
-		if (args != 0)
-		{
-			run_command(args, environ);
-			if (args[0] != NULL && args[0] != input)
-			{
-			free(args[0]);
-			free(args);
-			}
-		}
-		else
-		{
-			ac++;
-		}
+		input[chars_read - 1] = '\0';
+		parse_input(input, args);
+		if (_strcmp(args[0], "/bin/exit") == 0)
+			handle_exit_command(args, input, first);
+		if (*input != '\0')
+			run_command(args, big_env, input);
+
 	}
 	return (0);
 }

@@ -4,7 +4,7 @@
 	*@c: the char
 	*Return: 1
 	*/
-int put_char(char c)
+int put_char(const char c)
 {
 	return (write(1, &c, 1));
 }
@@ -12,7 +12,7 @@ int put_char(char c)
 	*print_string - a function that prints a string
 	*@str: the string
 	*/
-void print_string(char *str)
+void print_string(const char *str)
 {
 	while (*str != '\0')
 	{
@@ -23,15 +23,16 @@ void print_string(char *str)
 }
 /**
  *_strlen - print the length of a string
- *@s: the first char of th string;
+ *@str: the first char of th string;
  *Return: len
  */
 int _strlen(const char *str)
 {
-    int len = 0;
-    while (str[len] != '\0')
-        len++;
-    return len;
+	int len = 0;
+
+	while (str[len] != '\0')
+		len++;
+	return (len);
 }
 
 /**
